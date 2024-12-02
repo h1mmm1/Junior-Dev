@@ -1,0 +1,29 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int N=5005;
+int a[N];
+bool dp[N*2];
+
+int main(){
+	ios::sync_with_stdio(0); cin.tie(0);
+	long long int n,sum=0;
+	cin >> n;
+	for(int i=1;i<=n;i++){
+		cin >> a[i];
+		sum+=a[i];
+	}
+	long long int x=sum/2;
+	dp[0]=true;
+	for(int i=1;i<=n;i++){
+		for(int j=sum/2;j>=a[i];j--){
+			dp[j]|=dp[j-a[i]];
+		}
+	}
+//	for(int i=1;i<=sum*2;i++){
+//		cout << i << ' ' << dp[i] << "\n";
+//	}
+	while(dp[x]==false){
+		x--;
+	}
+	cout << sum-2*x;
+}

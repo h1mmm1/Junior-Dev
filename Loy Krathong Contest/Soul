@@ -1,0 +1,80 @@
+#include<bits/stdc++.h>
+using namespace std;
+using ll=long long int;
+using pii=pair<int,int>;
+const int N=1e5+5;
+vector<pii> g1[N],g2[N];
+bool vis1[N],vis2[N];
+ll dis1[N],dis2[N];
+priority_queue<pii,vector<pii>,greater<pii>> q;
+
+int main(){
+	ios::sync_with_stdio(0); cin.tie(0);
+	int n,m,s,ee,k;
+	cin >> n >> m >> s >> ee >> k;
+	for(int i=1;i<=m;i++){
+		int u,v,w;
+		cin >> u >> v >> w;
+		g1[u].push_back({v,w});
+		g2[v].push_back({u,w});
+	}
+	for(int i=1;i<=n;i++){
+		dis1[i]=dis2[i]=1e18;
+	}
+//	memset(dis1,0x3f,sizeof dis1);
+//	memset(dis2,0x3f,sizeof dis2);
+	q.push({dis1[s]=0,s});
+	while(!q.empty()){
+		ll l=q.top().first;
+		int x=q.top().second;
+		q.pop();
+		if(vis1[x]) continue;
+		vis1[x]=true;
+		for(auto e:g1[x]){
+			int xx=e.first;
+			int ll=e.second;
+			if(dis1[xx]>dis1[x]+ll){
+				dis1[xx]=dis1[x]+ll;
+				q.push({dis1[xx],xx});
+				
+			}
+		}
+	}
+	q.push({dis2[ee]=0,ee});
+	while(!q.empty()){
+		ll l=q.top().first;
+		int x=q.top().second;
+		q.pop();
+		if(vis2[x]) continue;
+		vis2[x]=true;
+		for(auto e:g2[x]){
+			int xx=e.first;
+			int ll=e.second;
+			if(dis2[xx]>dis2[x]+ll){
+				dis2[xx]=dis2[x]+ll;
+				q.push({dis2[xx],xx});
+				
+			}
+		}
+	}
+	ll sum=dis1[ee];
+	sort(dis1+1,dis1+1+n);
+	ll ans=0;
+	for(int i=1;i<=n;i++){
+		auto v=lower_bound(dis1+1,dis1+1+n,sum-dis2[i]-k)-dis1;
+		ans+=v-1;
+//		cout << v << "\n";
+//		cout << dis1[i] << ' '<< dis2[i] << "\n";
+	}
+	cout << ans;
+}
+/*
+7 7 1 7 1
+3 2 1
+5 7 1
+5 6 1
+3 7 1
+2 5 1
+4 2 1
+1 2 1
+*/

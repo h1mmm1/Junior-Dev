@@ -1,0 +1,87 @@
+#include<bits/stdc++.h>
+using namespace std;
+using ll=long long int;
+using ppi=pair<ll,ll>;
+using pii=pair<ppi,ppi>;
+const int N=1e4+4;
+int n,m,_x,y,d,s,t;
+vector<ppi> g[N];
+//queue<pii> q;
+priority_queue<pii,vector<pii>,greater<pii>> q;
+bool vis[N];
+ll dis[N];
+
+inline bool rec(int mid){
+	for(int i=1;i<=n;i++) dis[i]=1e18;
+	memset(vis,false,sizeof vis);
+	q.push({{dis[s]=0,_x},{s,0}});
+	
+//	cout << mid << "\n";
+	while(!q.empty()){
+		int l=q.top().first.second;
+		int p=q.top().first.second;
+		int x=q.top().second.first;
+		int cnt=q.top().second.second;
+		q.pop();
+//		cout << l << ' ' << p << ' ' << x << "\n";
+		if(vis[x]) continue;
+		vis[x]=true;
+		for(auto e:g[x]){
+			int xx=e.first;
+			int ll=e.second;
+//			long long int sum=mid*d+ll;
+//			cout << 1ll*sum << ' ' << cnt << ' ' << d << ' ' << l << "\n";
+//			if(p<sum) continue;
+			if(p<1ll*mid*d+ll) continue;
+			if(dis[xx]>dis[x]+mid*d+ll){
+				dis[xx]=dis[x]+mid*d+ll;
+				q.push({{dis[xx],p-y},{xx,cnt+1}});
+			}
+			
+		}
+	}
+	if(vis[t]==true) return true;
+	return false;
+}
+
+int main(){
+	ios::sync_with_stdio(0); cin.tie(0);
+	cin >> n >> m >> _x >> y >> d;
+	for(int i=1;i<=m;i++){
+		int u,v,w;
+		cin >> u >> v >> w;
+		g[u].push_back({v,w});
+		g[v].push_back({u,w});
+	}
+	cin >> s >> t;
+	int l=0,r=1e9;
+	bool ok=true;
+	while(l<r){
+		int mid=(l+r)/2;
+		if(rec(mid)==true){
+			l=mid+1;
+			ok=false;
+		}
+		else{
+			r=mid;
+		}
+	}
+	if(ok) cout << "Simp";
+	else cout << l-1;
+}
+/*
+8 11
+0 2 10
+1 2 2
+1 7 10
+2 7 7
+2 4 4
+4 7 2
+7 8 1
+7 6 10
+5 6 5
+4 5 5
+4 3 4
+3 5 3
+1 6
+*/
